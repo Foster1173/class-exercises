@@ -46,7 +46,42 @@ Plot the CRUD concentrations from $x = 0 \text{ to } 15$.  I recommend writing a
 If you want to compute exponentials, use the [`exp` function](https://docs.julialang.org/en/v1/base/math/#Base.exp-Tuple{Float64}).
 
 ```julia
-# place relevant code here. feel free to split this into multiple code chunks if you'd like
+# variables
+v= 25; #km/d
+C0= 0.2; # mg/L CRUD
+Q0= 500000; # m^3/d
+d= 10; # km 
+
+Q1= 100000; # m^3/d
+C1= 10; # mg/L 
+
+Q2= 60000; # m^3/d 
+C2= 20; # mg/L 
+
+k= 0.45; # 1/d 
+
+function massCRUD(x, E1, E2)
+    if x<=10
+        M= (1100 - 1000*E1)*exp(-.45*x/25); #kg/d 
+    else
+        M= ((1100 - 1000*E1)*exp(-.18) + 1200*(1 - E2))*exp(-.45*(x - 10)/25); # kg/d 
+    end
+    return M
+end
+
+function costCRUD(E1, E2)
+    C= 5000*E1^2 + 3000*E2^2;
+    return C
+end
+
+# running situation 1
+E1= 0; E2= 0;
+x= [0:1:15]; 
+M= zeros(16,1);
+M= massCRUD(x, E1, E2);
+plot(x, M)
+
+[I, Max]= findmax(M);
 ```
 
 In the absence of any treatment, what is the maximum concentration? How far downstream does it occur? Does this make sense physically?
